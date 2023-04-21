@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=Semester1
+comment1.params=
+comment1.target=Semester1()
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Semester1\r\n
+comment2.params=
+comment2.target=void\ run()
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+comment4.params=c\ code\ name\ year
+comment4.target=void\ setCourseData(Course,\ java.lang.String,\ java.lang.String,\ int)
+comment5.params=i
+comment5.target=java.lang.String\ semesterString(int)
+comment6.params=
+comment6.target=void\ display()
+numComments=7
