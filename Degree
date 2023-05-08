@@ -1,0 +1,56 @@
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.Comparator;
+
+class main {
+    public static void main(String[] args) {
+
+        Scanner myObj = new Scanner(System.in);
+        // get the student completed courses
+        System.out.println("write the Courses the you completed successfully. You must write with capital letters and add space after each course:");
+        String StudentCourses = myObj.nextLine();
+
+        //the completed Courses after being split. It also can detect more than one space
+        String[] CompletedCourses = StudentCourses.split("\\s+");
+
+
+        //the Degree courses list
+        String[][] courses = {
+
+                {"COMP1010", "1000", "Semester 1"}, {"COMP1140", "1000", "Semester 2"}, {"INFT1060", "1000", "Semester 1"}, {"SENG1050", "1000", "Semester 2"}, {"SENG1110", "1000", "Semester 1 & 2"}, {"INFT2031", "2000", "Semester 1 & 2"}, {"INFT2060", "2000", "Semester 2"}, {"INFT2150", "2000", "Semester 2"}, {"SENG2130", "2000", "Semester 1"}, {"SENG2260", "2000", "Semester 2"}, {"COMP3851A", "3000", "Semester 1 & 2"}, {"COMP3851B", "3000", "Semester 1 & 2"}, {"INFT3100", "3000", "Semester 1"}, {"INFT3800", "3000", "Semester 1"},
+
+                {"MATH1510", "1000", "Semester 2"}, {"SENG1120", "1000", "Semester 1 & 2"}, {"INFT2051", "2000", "Semester 2"}, {"EBUS3050", "3000", "Semester 1"}, {"INFT3050", "3000", "Semester 2"}, {"INFT3950", "3000", "Semester 1"},
+
+                {"INFT1004", "1000", "Semester 2"}, {"STAT1060", "1000", "Semester 1 & 2"}, {"SENG2250", "2000", "Semester 2"}, {"COMP3350", "3000", "Semester 1"}};
+        Arrays.sort(courses, new Comparator<String[]>() {
+            public int compare(String[] course1, String[] course2) {
+                return Integer.compare(Integer.parseInt(course1[1]), Integer.parseInt(course2[1]));
+            }
+        });
+
+
+        for (int i = 0; i < courses.length; i++) {
+            boolean isCompleted = false;
+
+            //loop to check the completed courses
+            for (int x = 0; x < CompletedCourses.length; x++) {
+                if (courses[i][0].equals(CompletedCourses[x])) {
+                    System.out.println(courses[i][0] + " is completed");
+                    isCompleted = true;
+                }
+            }
+            if (!isCompleted) {
+                System.out.println(courses[i][0]);
+
+            }
+        }
+
+    }
+
+}
+
+
+
+
+
