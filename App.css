@@ -1,0 +1,212 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #dce6b8;
+  font-family: Arial, sans-serif;
+  background-image: url('https://cdn.pixabay.com/photo/2021/03/01/18/45/abstract-6064298_960_720.jpg');
+  background-size: cover;
+}
+
+div{
+  background-color: #dce6b8;
+}
+/* I've addded this */
+.title, .instructPara {
+  text-align: center;
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, p {
+  padding-top: 30px;
+  text-align: center;
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto;
+  padding: 30px;
+  max-width: 500px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+select {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f1f1f1;
+}
+
+button[type="submit"] {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+/* I've addded this */
+.homePageNavButton {
+  margin-top: 20px;
+  margin-left: 875px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* I've addded this */
+.homePageNavButton:hover {
+  background-color: #3e8e41;
+  transform: scale(1.2);
+}
+
+Footer {position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #d5f2e1;
+  color: black;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+} 
+
+/* I've addded this */
+.homePageFooter {position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: #dce6b8;
+  color: black;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+} 
+
+.Planner-header {
+  padding: 30px;
+  text-align: left;
+  background: #c1d7b9;
+  color: #273336;
+  font-size: 28px;
+  font-family: Impact, Haettenschweiler, 'Arial Bold', sans-serif;
+}
+
+
+.App-Footer {position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: whitesmoke;
+  color: black;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}  
+
+table {
+  background-color: whitesmoke;
+  border: 2px solid forestgreen;
+  margin-left: 30px;
+  margin-top: 30px;
+  width: 800px;
+  height: 130px;
+  border-collapse: collapse;
+  table-layout:auto;
+  float: left;
+}
+  
+
+td {
+  text-align: center;
+  border: 1px solid black;
+  
+}
+
+.table-cell {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  position: relative;
+}
+
+.table-cell::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -4px;
+  bottom: 0;
+  width: 10px;
+  cursor: col-resize;
+  z-index: 1;
+}
+
+.table-cell:hover::after {
+  background-color: #ccc;
+}
+
+.handle{
+  background-color: whitesmoke;
+}
+
+table tbody tr td {
+  border-width: 2px;
+  border-style: solid;
+  border-color: forestgreen;
+  border-collapse: collapse;
+  
+}
+
+th{
+  font-size: small;
+  background-color:whitesmoke;
+  color: black; 
+  width: 46px;  
+  height: 150px;
+  vertical-align:auto;
+}
+
+th span { 
+  writing-mode: vertical-rl; /* +90°: use 'tb-rl' */
+  text-align: center;          /* +90°: use 'right' */
+  padding:10px 5px 0; }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+  }
+  
+  .row::after {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+
+
