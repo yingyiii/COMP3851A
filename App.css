@@ -170,6 +170,8 @@ td {
 
 .handle{
   background-color: whitesmoke;
+  height: 150px;
+  border-style: outset;
 }
 
 table tbody tr td {
@@ -184,7 +186,7 @@ th{
   font-size: small;
   background-color:whitesmoke;
   color: black; 
-  width: 46px;  
+  width: 35px;  
   height: 150px;
   vertical-align:auto;
 }
@@ -208,5 +210,73 @@ th span {
     width: 100%;
   }
 
+  .selected-courses {
+    display: auto;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    font-size: 13px;;
+  }
+  
+  .selected-course {
+    display: flex;
+    align-items: center;
+    background-color: #f1f1f1;
+    padding: 3px;
+    margin-bottom: 1px;
+  }
+  
+  .selected-course button {
+    margin-left: 5px;
+  }
+  
+  .add-course-button {
+    margin-top: 10px;
+    font-size: small;
+    background-color: #b6de95;
+    color: #363434;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .remove-button {
+    font-size: 10px;
+    background-color: #db4150;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Styling for the search input field */
+input[type="text"] {
+  width: 70%;
+  height:22px;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+}
 
+::placeholder{
+  color: rgb(87, 84, 84);
+}
+
+/* Styling for the degree options dropdown */
+datalist {
+  margin-top: 5px;
+  padding: 0;
+}
+
+datalist option {
+  padding: 5px;
+  cursor: pointer;
+}
+
+datalist option:hover {
+  background-color: #f5f5f5;
+}
 
