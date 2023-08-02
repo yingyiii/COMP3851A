@@ -1,4 +1,7 @@
 package com.ProgramAdvisoryTool.ProgramPlanner.Repository;
 
-public class RepositoryProgramPlanner {
+import com.ProgramAdvisoryTool.ProgramPlanner.Model.ProgramPlanner;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RepositoryProgramPlanner extends JpaRepository<ProgramPlanner, Integer>{
 }
