@@ -17,7 +17,7 @@ String name, degree;
 
         name = Name;
         degree = Degree;
-        return "New input";
+        return "New input added";
     }
     @GetMapping("/getInfo")
     public String getAllstudent() {
@@ -26,6 +26,7 @@ String name, degree;
 
 
     }
+
 }
 
 
