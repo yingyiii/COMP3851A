@@ -15,13 +15,13 @@ String name, degree;
     private PLService PLService;
     @PostMapping("/SendInfo")
     public String addStudentInfo(@RequestBody String Degree, String Major, String CompletedCourses, String DegreeLength) {
-        PlanGenerator.CreatePlan("","", new String[]{"", ""},"");
+        PlanGenerator.CreatePlan("","", "COMP1010",4,1);
 
 
         return "New input added";
     }
     @GetMapping("/getInfo")
-    public String[] getAllstudent() {
+    public String[][][] getAllstudent() {
 
 
 
