@@ -14,8 +14,8 @@ String name, degree;
 @Autowired
     private PLService PLService;
     @PostMapping("/SendInfo")
-    public String addStudentInfo(@RequestBody String Degree, String Major, String CompletedCourses, String DegreeLength) {
-        PlanGenerator.CreatePlan("","", "COMP1010",4,1);
+    public String addStudentInfo(@RequestBody String Degree, String Major, String CompletedCourses, int Units,int Startingsemester) {
+        PlanGenerator.CreatePlan(Major,Major, CompletedCourses,Units,Startingsemester);
 
 
         return "New input added";
