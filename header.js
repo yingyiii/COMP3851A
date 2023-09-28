@@ -1,7 +1,7 @@
 
 function Header() {
     return (
-        <header className="Planner-header">PROGRAM PLAN <br/>
+        <header className="Planner-header">UON PROGRAM PLAN <br/>
                                             Bachelor of xxx</header>
     )
 }

@@ -100,33 +100,35 @@ const BoxesGroup = () => {
         <br />
         <br />
       </div>
-      
-        <tbody>
-          <tr>
-            <th>
-              <span>YEAR 1</span>
-              <span>YEAR 2</span>
-              <span>YEAR 3</span><br/>
-            </th>
-            <td>
+      <tbody>
+        <tr>
+          <th>
+            <span>YEAR 1</span>
+            <span>YEAR 2</span>
+            <span>YEAR 3</span><br/>
+          </th>
+          <td>
             <div className="semester-container">
-            <div className="semester-labels">
-            <div>
-              <span className="left-semester">SEMESTER 1</span>
-              <span className="right-semester">SEMESTER 2</span>
+              <div className="semester-labels">
+                <div>
+                  <span className="left-semester">SEMESTER 1</span>
+                  <span className="right-semester">SEMESTER 2</span>
+                </div>
+              </div>
             </div>
-            </div>
+            <div className="boxesGroup">{makeBoxes()} </div>
+          </td>
+          <th></th>
+          <td className="blank-space">
+            {/* Content for the new cell */}
+          </td>
+        </tr>
         
-      </div>
-            <div className="boxesGroup">{makeBoxes()} </div> 
-            </td>
-          </tr>
-        </tbody>
-
+      </tbody>
+      
       <Footer />
     </div>
   );
-  
 };
 
 export default BoxesGroup;

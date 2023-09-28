@@ -111,7 +111,7 @@ Footer {position: fixed;
   text-align: left;
   background: #589dda;
   color: #273336;
-  font-size: 28px;
+  font-size: 35px;
   font-family: Impact, Haettenschweiler, 'Arial Bold', sans-serif;
 }
 
@@ -193,7 +193,7 @@ th{
 th span { 
   writing-mode: vertical-rl; /* +90°: use 'tb-rl' */
   text-align: center;          /* +90°: use 'right' */
-  padding:130px 40px 70px; }
+  padding:150px 30px 40px; }
 
   .column {
     display: flex;
@@ -283,7 +283,7 @@ datalist option:hover {
 /* styles for the main layout to display nested boxes */
 .boxesGroup {
   display: grid;
-  grid-template-columns: repeat(4, 180px) 300px 60px 300px 60px;
+  grid-template-columns: repeat(4, 150px) 200px 100px 200px 100px;
   grid-template-rows: 200px 200px 200px;
   gap: 1vw;
   place-items: center;
@@ -295,8 +295,8 @@ datalist option:hover {
 /* styles for nested boxes */
 .box {
   margin-left: 1px;
-  height: 160px;
-  width: 180px;
+  height: 150px;
+  width: 150px;
   border-radius: 15px;
   cursor: -webkit-grab; cursor: grab;
   display: inline;
@@ -331,6 +331,14 @@ datalist option:hover {
 
 .right-semester {
   text-align: right;
-  margin-left: 780px;
+  margin-left: 600px;
   font-weight: 600;
+}
+
+.blank-space {
+  width: 20%;
+  height: 600px; 
+  background-color: #ddd; 
+  padding-left: 10px;
+  
 }
