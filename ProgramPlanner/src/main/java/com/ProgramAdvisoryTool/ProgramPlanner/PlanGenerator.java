@@ -1,9 +1,13 @@
 package com.ProgramAdvisoryTool.ProgramPlanner;
-
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PlanGenerator {
     private static int semester1Count = 0; //Semester 1 Counter
@@ -61,7 +65,7 @@ public class PlanGenerator {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/uondb", "root", "0000");
 
             //create statement
-            String s1 = "SELECT * FROM cs_courses WHERE Course_Major = 'core' or Course_Major = 'WIL' Or Course_Major  like '%Cyber Security%' And Course_Major not like '%Directed Cyber Security%';";
+            String s1 = "SELECT * FROM cs_courses WHERE Course_Major = 'core' or Course_Major = 'WIL' Or Course_Major  like '%Software Development%' And Course_Major not like '%Directed Software Development%';";
             PreparedStatement preparedStatement1 = connection.prepareStatement(s1, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement1.setString(1, "Core");
             resultSet1 = preparedStatement1.executeQuery();
@@ -70,6 +74,38 @@ public class PlanGenerator {
             PreparedStatement preparedStatement2 = connection.prepareStatement(s2, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement2.setString(1, "Directed Software Development");
             resultSet2 = preparedStatement2.executeQuery();
+
+
+
+
+            //COPY FROM HERE
+            int CoreCoursesUnits = 0;
+            int CompulsoryCoursesUnits = 0;
+            int DirectedCoursesUnits = 0;
+            int ElectivesUnits = 0;
+
+            String s3 = "Select CoreCoursesUnits, CompulsoryCoursesUnits, DirectedCoursesUnits, ElectivesUnits FROM majors WHERE MajorName = \"Software Development\";";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet3 = statement.executeQuery(s3);
+
+            while(resultSet3.next()){
+
+                CoreCoursesUnits = resultSet3.getInt("CoreCoursesUnits");
+                CompulsoryCoursesUnits = resultSet3.getInt("CompulsoryCoursesUnits");
+                DirectedCoursesUnits = resultSet3.getInt("DirectedCoursesUnits");
+                ElectivesUnits = resultSet3.getInt("ElectivesUnits");
+
+                System.out.println("\n" + "The divided units for the selected major are: " + "Course Courses = "+ CoreCoursesUnits + ", Compulsory Courses = " + CompulsoryCoursesUnits + ", Directed Courses = " + DirectedCoursesUnits + ", Elective Courses = " + ElectivesUnits + "\n");
+
+            }
+            //TO HERE
+
+
+
+
+
+
+
 
             resultSet1.last();
             //int rowCount1 = resultSet1.getRow();
@@ -103,8 +139,11 @@ public class PlanGenerator {
             }
 
             ///////////////////////////////////////////////
-            for (int i = row; i < row + 3; i++) { // the 3 will be changes with about of Electives
+            for (int i = row; i < row + (ElectivesUnits/10); i++) { // the 3 will be changes with about of Electives
                 courses[i] = new String[]{"ELECTIVE", "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"};
+            }
+            for (int i = row + (ElectivesUnits/10); i < (row + (ElectivesUnits/10)) + (DirectedCoursesUnits/10); i++) { // the 3 will be changes with about of Electives
+                courses[i] = new String[]{"Directed Major", "Directed Major", "2000", "10", "Semester 1 & 2", null, null, "Directed Major"};
             }
             ////////////////////////////////////////////////
 
