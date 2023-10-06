@@ -32,10 +32,15 @@ public class PlanGenerator {
         Units_Needed = UnitLoad;
         Completion_Years = (Degree_Units / Units_Needed) / 20;  // the length that the student wants to finish their Degree
 
-        FinalPlan = new String[Completion_Years * 2][Units_Needed][8]; // the final array will be the array that will have the plan (Completion_Years * 2 = semesters, Units_Needed = courses, 8 = the course information)
+        FinalPlan = new String[Completion_Years * 2][4][8]; // the final array will be the array that will have the plan (Completion_Years * 2 = semesters, Units_Needed = courses, 8 = the course information)
 
 
-
+        if (Degree.contains("Computer Science"))
+        {
+            Degree = "cs_courses";
+        } else if (Degree.contains("Information Technology")) {
+            Degree = "it_courses";
+        }
 
 
         String[][] Semester1 = new String[Degree_Units / 20][8]; //an array to store all the courses from Semester 1
@@ -65,12 +70,12 @@ public class PlanGenerator {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/uondb", "root", "0000");
 
             //create statement
-            String s1 = "SELECT * FROM cs_courses WHERE Course_Major = 'core' or Course_Major = 'WIL' Or Course_Major  like '%Software Development%' And Course_Major not like '%Directed Software Development%';";
+            String s1 = "SELECT * FROM "+Degree+" WHERE Course_Major = 'core' OR Course_Major = 'WIL' OR Course_Major LIKE '%"+Major+"%' AND Course_Major NOT LIKE '%Directed "+Major+"%';";
             PreparedStatement preparedStatement1 = connection.prepareStatement(s1, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement1.setString(1, "Core");
             resultSet1 = preparedStatement1.executeQuery();
 
-            String s2 = "SELECT * FROM cs_courses WHERE Course_Major like '%Directed Software Development%';";
+            String s2 = "SELECT * FROM "+Degree+" WHERE Course_Major like '%Directed "+Major+"%';";
             PreparedStatement preparedStatement2 = connection.prepareStatement(s2, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement2.setString(1, "Directed Software Development");
             resultSet2 = preparedStatement2.executeQuery();
@@ -84,9 +89,11 @@ public class PlanGenerator {
             int DirectedCoursesUnits = 0;
             int ElectivesUnits = 0;
 
-            String s3 = "Select CoreCoursesUnits, CompulsoryCoursesUnits, DirectedCoursesUnits, ElectivesUnits FROM majors WHERE MajorName = \"Software Development\";";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet3 = statement.executeQuery(s3);
+            String s3 = "SELECT CoreCoursesUnits, CompulsoryCoursesUnits, DirectedCoursesUnits, ElectivesUnits FROM majors WHERE MajorName = ?";
+            PreparedStatement preparedStatement3 = connection.prepareStatement(s3);
+            preparedStatement3.setString(1, Major); // Set the Major parameter
+            ResultSet resultSet3 = preparedStatement3.executeQuery();
+
 
             while(resultSet3.next()){
 
@@ -124,8 +131,11 @@ public class PlanGenerator {
             int row = 0;
 
             while (resultSet1.next()) {
+
                 for (int i = 0; i < columnCount1; i++) {
                     courses[row][i] = resultSet1.getString(i + 1);
+                    if(courses[row][0] == null)
+                    {break;}
                 }
                 row++;
             }
@@ -186,34 +196,7 @@ public class PlanGenerator {
         }
 
 
-/*
-        String[][] courses = {
-                {"COMP1010", "Computing Fundamentals", "1000", "10", "Semester 1", null, null, "Core"},
-                {"COMP1140", "Database and Information Management", "1000", "10", "Semester 2", null, null, "Core"},
-                {"COMP3350", "Advanced Database", "3000", "10", "Semester 1", null, null, "ICT Professional"},
-                {"COMP3851A", "Computing and Information Sciences Work Integrated Learning Part A", "3000", "10", "Semester 1 & 2", null, null, "WIL"},
-                {"COMP3851B", "Computing and Information Sciences Work Integrated Learning Part B", "3000", "10", "Semester 1 & 2", null, null, "WIL"},
-                {"INFT1004", "Introduction to Programming", "1000", "10", "Semester 2", null, null, "ICT Professional"},
-                {"INFT1060", "Cybersecurity Fundamentals", "1000", "10", "Semester 1", null, null, "Core"},
-                {"INFT2031", "Systems and Network Administration", "2000", "10", "Semester 1 & 2", null, null, "Core"},
-                {"INFT2060", "Applied Artificial Intelligence", "2000", "10", "Semester 2", null, null, "Core"},
-                {"INFT2130", "Systems Analysis and Design", "2000", "10", "Semester 1", null, null, "Core"},
-                {"INFT2150", "Business Analysis", "2000", "10", "Semester 2", null, null, "Core"},
-                {"INFT3060", "Cloud Computing", "3000", "10", "Semester 2", "INFT2031 Systems and Network Administration",null, "ICT Professional"},
-                {"INFT3100", "Project Management", "3000", "20", "Semester 1", null, null, "Core"},
-                {"INFT3800", "Professional Practice in IT", "3000", "10", "Semester 1", null, null, "Core"},
-                {"INFT6201", "Big Data", "6000", "10", "Trimester 3", "Exposure to modern Database technology",null, "ICT Professional"},
-                {"SENG1050", "Web Technologies", "1000", "10", "Semester 2", null, null, "Core"},
-                {"SENG1110", "Object Oriented Programming", "1000", "10", "Semester 1 & 2", null, null, "Core"},
-                {"SENG2250", "System and Network Security", "2000", "10", "Semester 2",null,null, "ICT Professional"},
-                {"SENG2260", "Human-Computer Interaction", "2000", "10", "Semester 2",null,null, "Core"},
-                {"STAT1060", "Business Decision Making", "1000", "10", "Semester 1 & 2",null,null, "ICT Professional"},
-                {"ELECTIVE", "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"},
-                {"ELECTIVE", "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"},
-                {"ELECTIVE", "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"},
-                {"ELECTIVE", "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"}
-        };
-*/
+
 
 
 
@@ -278,7 +261,7 @@ public class PlanGenerator {
         semester1_2Count = 0;// reset the Semester 1 and 2 Courses To 0
         ////////////////////////////////////////////////////////////////////////////////////
         // Add the Semester 1 and 2 Courses to Semester 1 Array.
-/*       while (semester1Count < Semester1.length -(NotNullCounter/2) && Semester1[semester1Count] != null) {
+/*        while (semester1Count < Semester1.length -(NotNullCounter/2) && Semester1[semester1Count] != null) {
             System.arraycopy(Semester1_2[semester1_2Count], 0, Semester1[semester1Count], 0, 8);
             semester1Count++;
             semester1_2Count++;
@@ -292,9 +275,19 @@ public class PlanGenerator {
             semester1_2Count++;
         }*/
 
+        String courseCode; // Get the course code from Semester1_2
+
+        // Check which array has fewer courses at the same level
+        int levelCount1;
+        int levelCount2;
+
+
         while (semester1Count < Semester1.length - (NotNullCounter / 2) && Semester1[semester1Count] != null &&
                 semester2Count < Semester2.length - (NotNullCounter / 2) && Semester2[semester2Count] != null) {
-            if (semester1_2Count % 2 == 0) {
+            courseCode = Semester1_2[NotNullCounter][2];
+            levelCount1 = countCoursesWithLevel(Semester1, courseCode);
+            levelCount2 = countCoursesWithLevel(Semester2, courseCode);
+            if (levelCount1 > levelCount2) {
                 // Even count, add to Semester 2
                 System.arraycopy(Semester1_2[semester1_2Count], 0, Semester2[semester2Count], 0, 8);
                 semester2Count++;
@@ -358,7 +351,7 @@ public class PlanGenerator {
 
 
 
-/*        System.out.println("Semester 1 :\n");
+        System.out.println("Semester 1 :\n");
         for (int x = 0; x < Semester1.length; x++) {
             System.out.println(Semester1[x][0] + ", " + Semester1[x][1] + ", " + Semester1[x][1] + ", " + Semester1[x][2] + ", " + Semester1[x][3] + ", " + Semester1[x][4] + ", " + Semester1[x][5] + ", " + Semester1[x][6] + ", " + Semester1[x][7]);
 
@@ -371,7 +364,7 @@ public class PlanGenerator {
 
             System.out.println("Next Course :\n");
 
-        }*/
+        }
 
 
 
@@ -422,6 +415,7 @@ public class PlanGenerator {
             }
             index++;
         }
+        FillTheNulls();
     }
     private static void StartingSemester2(String[][] SS1, String[][] SS2, String[][] WIL)
     {
@@ -463,6 +457,7 @@ public class PlanGenerator {
             }
             index++;
         }
+        FillTheNulls();
     }
     private static void SortCourses(String[][] SS1, String[][] SS2)
     {
@@ -497,6 +492,32 @@ public class PlanGenerator {
 
     }
 
+    public static void FillTheNulls()
+    {
+        int empityCount = 1;
+        for (int i = 0; i < FinalPlan.length; i++) {
+            for (int j = 0; j < FinalPlan[i].length; j++) {
+                if (FinalPlan[i][j][0] == null) {
+                    FinalPlan[i][j][0] = "EMPITY" + empityCount;
+                    FinalPlan[i][j][3] = "0";
+                    empityCount++;
+                }
+            }
+        }
+
+
+
+    }
+
+    private static int countCoursesWithLevel(String[][] array, String courseCode) {
+        int count = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i][2] != null && array[i][2].equals(courseCode)) {
+                count++;
+            }
+        }
+        return count;
+    }
 
 }
 
