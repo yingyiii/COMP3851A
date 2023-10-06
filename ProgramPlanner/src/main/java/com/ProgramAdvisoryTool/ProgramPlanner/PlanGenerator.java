@@ -209,7 +209,7 @@ public class PlanGenerator {
 
             //loop to check the completed courses
             for (String completedCours : CompletedCourses) {
-                if (courses[i][0].equals(completedCours)) {
+                if (courses[i][0].equals(completedCours)|| (courses[i][5] != null && courses[i][5].contains(completedCours))) {
                     ArrayList<String[]> coursesList = new ArrayList<>(Arrays.asList(courses));
                     coursesList.remove(i);
                     courses = coursesList.toArray(new String[coursesList.size()][]);
