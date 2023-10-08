@@ -1,0 +1,193 @@
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Objects;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) throws SQLException {
+        //declare variables
+        String[][] course = null;
+        String[][] directed_course;
+        Connection connection = null;
+        ResultSet resultSet1 = null;
+        ResultSet resultSet2 = null;
+
+        try {
+
+            //create connection
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/uondb", "root", "0000");
+
+            //create statement 1
+            String s1 = "SELECT * FROM cs_courses WHERE Course_Major = ?";
+            PreparedStatement preparedStatement1 = connection.prepareStatement(s1, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            preparedStatement1.setString(1, "Core");
+            resultSet1 = preparedStatement1.executeQuery();
+
+            //create statement 2
+            String s2 = "SELECT * FROM cs_courses WHERE Course_Major = ?";
+            PreparedStatement preparedStatement2 = connection.prepareStatement(s2, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            preparedStatement2.setString(1, "Directed Software Development");
+            resultSet2 = preparedStatement2.executeQuery();
+
+
+            //COPY FROM HERE
+            int CoreCoursesUnits;
+            int CompulsoryCoursesUnits;
+            int DirectedCoursesUnits;
+            int ElectivesUnits;
+
+            String s3 = "Select CoreCoursesUnits, CompulsoryCoursesUnits, DirectedCoursesUnits, ElectivesUnits FROM majors WHERE MajorName = \"ICT Developer\";";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet3 = statement.executeQuery(s3);
+
+            while (resultSet3.next()) {
+
+                CoreCoursesUnits = resultSet3.getInt("CoreCoursesUnits");
+                CompulsoryCoursesUnits = resultSet3.getInt("CompulsoryCoursesUnits");
+                DirectedCoursesUnits = resultSet3.getInt("DirectedCoursesUnits");
+                ElectivesUnits = resultSet3.getInt("ElectivesUnits");
+
+                System.out.println("\n" + "The divided units for the selected major are: " + "Course Courses = " + CoreCoursesUnits + ", Compulsory Courses = " + CompulsoryCoursesUnits + ", Directed Courses = " + DirectedCoursesUnits + ", Elective Courses = " + ElectivesUnits + "\n");
+
+            }
+            //TO HERE
+
+
+            //set cursor
+            resultSet1.last();
+            int rowCount1 = resultSet1.getRow();
+            int columnCount1 = resultSet1.getMetaData().getColumnCount();
+            resultSet1.beforeFirst();
+
+            //create array to store result
+            course = new String[rowCount1][columnCount1];
+
+            //set cursor2
+            resultSet2.last();
+            int rowCount2 = resultSet2.getRow();
+            int columnCount2 = resultSet2.getMetaData().getColumnCount();
+            resultSet2.beforeFirst();
+
+            //create another array to store result
+            directed_course = new String[rowCount2][columnCount2];
+
+            int row = 0;
+
+            while (resultSet1.next()) {
+                for (int i = 0; i < columnCount1; i++) {
+                    course[row][i] = resultSet1.getString(i + 1);
+                }
+                row++;
+            }
+
+            int row2 = 0;
+
+            while (resultSet2.next()) {
+                for (int a = 0; a < columnCount2; a++) {
+                    directed_course[row2][a] = resultSet2.getString(a + 1);
+                }
+                row2++;
+            }
+
+            for (int j = 0; j < rowCount1; j++) {
+                for (int k = 0; k < columnCount1; k++) {
+                    System.out.print(course[j][k] + "\t");
+                }
+                System.out.println();
+            }
+
+            for (int b = 0; b < rowCount2; b++) {
+                for (int c = 0; c < columnCount2; c++) {
+                    System.out.print(directed_course[b][c] + "\t");
+                }
+                System.out.println();
+            }
+
+            //Swap Values of the array
+
+            String courseCode1;
+            String courseCode2;
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("\n" + "Please enter the first course code: ");
+            courseCode1 = scanner.nextLine();
+            System.out.print("Please enter the second course code: ");
+            courseCode2 = scanner.nextLine();
+
+            boolean result = swapValue(course, courseCode1, courseCode2);
+
+            if (result) {
+                System.out.println("\n" + "The course have successfully swap.");
+            } else {
+                System.out.println("Course Swap Fail!!");
+            }
+
+            System.out.println("\n" + "Courses after swapping:" + "\n");
+            for (String[] rowSwap : course) {
+                for (String num : rowSwap) {
+                    System.out.print(num + " ");
+                }
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (resultSet1 != null) {
+                resultSet1.close();
+            }
+            if (resultSet2 != null) {
+                resultSet2.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static boolean swapValue (String[][]course, String courseCode1, String courseCode2){
+
+        int swapRow1 = -1;
+        int swapRow2 = -1;
+        int swapColumn1 = -1;
+        int swapColumn2 = -1;
+        int rowCount1 = course.length;
+        int rowCount2 = course[0].length;
+
+
+        for (int j = 0; j < rowCount1; j++) {
+            for (int k = 0; k < rowCount2; k++) {
+                if (Objects.equals(course[j][k], courseCode1)) {
+                    swapRow1 = j;
+                    swapColumn1 = k;
+                } else if (Objects.equals(course[j][k], courseCode2)) {
+                    swapRow2 = j;
+                    swapColumn2 = k;
+                }
+            }
+        }
+
+
+        if (swapRow1 != -1 && swapRow2 != -1 && swapColumn1 != -1 && swapColumn2 != -1) {
+
+            String temp = course[swapRow1][swapColumn1];
+            course[swapRow1][swapColumn1] = course[swapRow2][swapColumn2];
+            course[swapRow2][swapColumn2] = temp;
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    }
+
