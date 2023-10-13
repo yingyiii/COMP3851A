@@ -22,17 +22,24 @@ public class PlanGenerator {
     private static int index = 0;
     private static int Completion_Years;
     private static int NotNullCounter = 0;
-
+    private static String[] CompletedCourses;
     //private static final String[][][] FinalPlan = new String[Completion_Years * 2][Units_Needed][8]; // the final array will be the array that will have the plan (Completion_Years * 2 = semesters, Units_Needed = courses, 8 = the course information)
 
 
     public void CreatePlan(String Degree, String Major, String completedCourses, int UnitLoad,int startingSemester) {
 
+        System.out.println("Selected Degree : "+Degree);
+        System.out.println("Selected Major : "+Major);
+        System.out.println("The Completed Courses : "+completedCourses);
+        System.out.println("Selected Unit load Per Semester : "+UnitLoad);
+        System.out.println("Started Semester : Semester "+startingSemester);
+
+
         int starting_Semester = startingSemester;
         Units_Needed = UnitLoad;
         Completion_Years = (Degree_Units / Units_Needed) / 20;  // the length that the student wants to finish their Degree
 
-        FinalPlan = new String[Completion_Years * 2][4][8]; // the final array will be the array that will have the plan (Completion_Years * 2 = semesters, Units_Needed = courses, 8 = the course information)
+        FinalPlan = new String[Completion_Years * 2][4][8]; // the final array will be the array that will have the plan (Completion_Years * 2 = semesters, 4 COURSES PER SEMESTER (FIXED), 8 = the course information)
 
 
         if (Degree.contains("Computer Science"))
@@ -55,14 +62,14 @@ public class PlanGenerator {
 
 
         //String StudentCourses = completedCourses;
-        String[] CompletedCourses = completedCourses.split("\\s+");
+        CompletedCourses = completedCourses.split("\\s+");
 
 
         String[][] courses = new String[0][];
         String[][] directed_course = new String[0][];
         Connection connection = null;
-        ResultSet resultSet1 = null;
-        ResultSet resultSet2 = null;
+        ResultSet resultSet12 = null;
+        ResultSet resultSet22 = null;
 
         try {
 
@@ -73,12 +80,12 @@ public class PlanGenerator {
             String s1 = "SELECT * FROM "+Degree+" WHERE Course_Major = 'core' OR Course_Major = 'WIL' OR Course_Major LIKE '%"+Major+"%' AND Course_Major NOT LIKE '%Directed "+Major+"%';";
             PreparedStatement preparedStatement1 = connection.prepareStatement(s1, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement1.setString(1, "Core");
-            resultSet1 = preparedStatement1.executeQuery();
+            resultSet12 = preparedStatement1.executeQuery();
 
             String s2 = "SELECT * FROM "+Degree+" WHERE Course_Major like '%Directed "+Major+"%';";
             PreparedStatement preparedStatement2 = connection.prepareStatement(s2, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement2.setString(1, "Directed Software Development");
-            resultSet2 = preparedStatement2.executeQuery();
+            resultSet22 = preparedStatement2.executeQuery();
 
 
 
@@ -102,7 +109,7 @@ public class PlanGenerator {
                 DirectedCoursesUnits = resultSet3.getInt("DirectedCoursesUnits");
                 ElectivesUnits = resultSet3.getInt("ElectivesUnits");
 
-                System.out.println("\n" + "The divided units for the selected major are: " + "Course Courses = "+ CoreCoursesUnits + ", Compulsory Courses = " + CompulsoryCoursesUnits + ", Directed Courses = " + DirectedCoursesUnits + ", Elective Courses = " + ElectivesUnits + "\n");
+                System.out.println("The divided units for the selected major are: " + "Course Courses = "+ CoreCoursesUnits + ", Compulsory Courses = " + CompulsoryCoursesUnits + ", Directed Courses = " + DirectedCoursesUnits + ", Elective Courses = " + ElectivesUnits);
 
             }
             //TO HERE
@@ -114,26 +121,26 @@ public class PlanGenerator {
 
 
 
-            resultSet1.last();
+            resultSet12.last();
             //int rowCount1 = resultSet1.getRow();
             //int columnCount1 = resultSet1.getMetaData().getColumnCount();
             int rowCount1 = 24;
             int columnCount1 = 8;
-            resultSet1.beforeFirst();
+            resultSet12.beforeFirst();
             courses = new String[rowCount1][columnCount1];
 
-            resultSet2.last();
-            int rowCount2 = resultSet2.getRow();
-            int columnCount2 = resultSet2.getMetaData().getColumnCount();
-            resultSet2.beforeFirst();
+            resultSet22.last();
+            int rowCount2 = resultSet22.getRow();
+            int columnCount2 = resultSet22.getMetaData().getColumnCount();
+            resultSet22.beforeFirst();
             directed_course = new String[rowCount2][columnCount2];
 
             int row = 0;
 
-            while (resultSet1.next()) {
+            while (resultSet12.next()) {
 
                 for (int i = 0; i < columnCount1; i++) {
-                    courses[row][i] = resultSet1.getString(i + 1);
+                    courses[row][i] = resultSet12.getString(i + 1);
                     if(courses[row][0] == null)
                     {break;}
                 }
@@ -141,23 +148,26 @@ public class PlanGenerator {
             }
             int row2 = 0;
 
-            while (resultSet2.next()) {
+            while (resultSet22.next()) {
                 for (int a = 0; a < columnCount2; a++) {
-                    directed_course[row2][a] = resultSet2.getString(a + 1);
+                    directed_course[row2][a] = resultSet22.getString(a + 1);
                 }
                 row2++;
             }
-
+            int Elective = 1;
             ///////////////////////////////////////////////
             for (int i = row; i < row + (ElectivesUnits/10); i++) { // the 3 will be changes with about of Electives
-                courses[i] = new String[]{"ELECTIVE", "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"};
+                courses[i] = new String[]{"ELECTIVE "+ Elective, "ELECTIVE", "1000", "10", "Semester 1 & 2", null, null, "ELECTIVE"};
+                Elective++;
             }
+            int Directed = 1;
             for (int i = row + (ElectivesUnits/10); i < (row + (ElectivesUnits/10)) + (DirectedCoursesUnits/10); i++) { // the 3 will be changes with about of Electives
-                courses[i] = new String[]{"Directed Major", "Directed Major", "2000", "10", "Semester 1 & 2", null, null, "Directed Major"};
+                courses[i] = new String[]{"Directed Major " +Directed, "Directed Major", "2000", "10", "Semester 1 & 2", null, null, "Directed Major"};
+                Directed++;
             }
             ////////////////////////////////////////////////
 
-            for (int j = 0; j < rowCount1; j++) {
+            /*for (int j = 0; j < rowCount1; j++) {
                 for (int k = 0; k < columnCount1; k++) {
                     //System.out.println(course.length);
 
@@ -168,10 +178,9 @@ public class PlanGenerator {
 
             for (int b = 0; b < rowCount2; b++) {
                 for (int c = 0; c < columnCount2; c++) {
-                    //System.out.print(directed_course[b][c] + "\t");
                 }
-                System.out.println();
-            }
+
+            }*/
 
         }
 
@@ -181,11 +190,11 @@ public class PlanGenerator {
 
         finally {
             try {
-                if (resultSet1 != null) {
-                    resultSet1.close();
+                if (resultSet12 != null) {
+                    resultSet12.close();
                 }
-                if (resultSet2 != null) {
-                    resultSet2.close();
+                if (resultSet22 != null) {
+                    resultSet22.close();
                 }
                 if (connection != null) {
                     connection.close();
@@ -204,24 +213,7 @@ public class PlanGenerator {
 
 
 
-        for (int i = 0; i < courses.length; i++) {
-            boolean isCompleted = false;
 
-            //loop to check the completed courses
-            for (String completedCours : CompletedCourses) {
-                if (courses[i][0].equals(completedCours)|| (courses[i][5] != null && courses[i][5].contains(completedCours))) {
-                    ArrayList<String[]> coursesList = new ArrayList<>(Arrays.asList(courses));
-                    coursesList.remove(i);
-                    courses = coursesList.toArray(new String[coursesList.size()][]);
-                    isCompleted = true;
-                }
-            }
-            if (!isCompleted) {
-
-            }
-
-
-        }
 
 
 
@@ -284,11 +276,10 @@ public class PlanGenerator {
 
         while (semester1Count < Semester1.length - (NotNullCounter / 2) && Semester1[semester1Count] != null &&
                 semester2Count < Semester2.length - (NotNullCounter / 2) && Semester2[semester2Count] != null) {
-            courseCode = Semester1_2[NotNullCounter][2];
+            courseCode = Semester1_2[semester1_2Count][2];
             levelCount1 = countCoursesWithLevel(Semester1, courseCode);
             levelCount2 = countCoursesWithLevel(Semester2, courseCode);
-            if (levelCount1 > levelCount2) {
-                // Even count, add to Semester 2
+            if (levelCount1 >= levelCount2) {
                 System.arraycopy(Semester1_2[semester1_2Count], 0, Semester2[semester2Count], 0, 8);
                 semester2Count++;
             } else {
@@ -337,7 +328,7 @@ public class PlanGenerator {
             System.out.println("===========================================================");
         }
 
-        System.out.print("/////////////////////////////////////////////////////////////////\n");
+        /*System.out.print("/////////////////////////////////////////////////////////////////\n");
         System.out.print("/////////////////////////////////////////////////////////////////\n");
         System.out.print("/////////////////////////////////////////////////////////////////\n");
         System.out.print("/////////////////////////////////////////////////////////////////\n");
@@ -364,7 +355,7 @@ public class PlanGenerator {
 
             System.out.println("Next Course :\n");
 
-        }
+        }*/
 
 
 
@@ -415,7 +406,15 @@ public class PlanGenerator {
             }
             index++;
         }
+        CheckCompletedCourses();
         FillTheNulls();
+        CheckforNullSemesters();
+        //swapValue("SENG2130", "INFT3800");
+        System.out.println("Plan Has Been Generated Successfully");
+        //prerequisite("COMP3851A");
+
+
+
     }
     private static void StartingSemester2(String[][] SS1, String[][] SS2, String[][] WIL)
     {
@@ -457,7 +456,13 @@ public class PlanGenerator {
             }
             index++;
         }
+        CheckCompletedCourses();
         FillTheNulls();
+        CheckforNullSemesters();
+        //swapValue("SENG2130", "INFT3800");
+        System.out.println("Plan Has Been Generated Successfully");
+        //prerequisite("COMP3851A");
+
     }
     private static void SortCourses(String[][] SS1, String[][] SS2)
     {
@@ -487,6 +492,7 @@ public class PlanGenerator {
     public String[][][] GetThePlan()
     {
 
+        System.out.println("Plan Has Been ");
 
         return FinalPlan;
 
@@ -498,12 +504,13 @@ public class PlanGenerator {
         for (int i = 0; i < FinalPlan.length; i++) {
             for (int j = 0; j < FinalPlan[i].length; j++) {
                 if (FinalPlan[i][j][0] == null) {
-                    FinalPlan[i][j][0] = "EMPITY" + empityCount;
+                    FinalPlan[i][j][0] = "EMPITY " + empityCount;
                     FinalPlan[i][j][3] = "0";
                     empityCount++;
                 }
             }
         }
+        System.out.println("Nulls Filled Successfully");
 
 
 
@@ -518,6 +525,390 @@ public class PlanGenerator {
         }
         return count;
     }
+
+
+    private static void CheckCompletedCourses() {
+        for (int i = 0; i < FinalPlan.length; i++) {
+            for (int j = 0; j < FinalPlan[i].length; j++) {
+                if (FinalPlan[i][j][0] != null) {
+                    for (String completedCourse : CompletedCourses) {
+                        if (FinalPlan[i][j][0] != null && FinalPlan[i][j][0].equals(completedCourse)) {
+                            // If the course is completed, replace the course information with nulls
+                            for (int k = 0; k < FinalPlan[i][j].length; k++) {
+                                FinalPlan[i][j][k] = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void CheckforNullSemesters()
+    {
+        for (int i = 0; i < FinalPlan.length; i++) {
+            boolean allNull = true;
+
+            for (int j = 0; j < FinalPlan[i].length; j++) {
+                if (FinalPlan[i][j][1] != null) {
+                    allNull = false;
+                    break; // If any element in [][this][1] is not null, no need to check further.
+                }
+            }
+
+            if (allNull) {
+                // Remove the index by shifting elements
+                for (int k = i; k < FinalPlan.length - 1; k++) {
+                    FinalPlan[k] = FinalPlan[k + 1];
+                }
+                // Decrement the length of the array
+                FinalPlan = Arrays.copyOf(FinalPlan, FinalPlan.length - 1);
+                System.out.println("semester "+ i +" Has Been Removed From The Plan");
+                i--; // Recheck the current index since we shifted elements
+            }
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static boolean swapValue (String courseCode1, String courseCode2){
+
+        for (int i = 0; i < FinalPlan.length; i++) {
+
+            for (int j = 0; j < FinalPlan[i].length; j++){
+
+                if (FinalPlan[i][j][0].equals(courseCode1)){
+
+                    for (int k = 0; k < FinalPlan.length; k++){
+
+                        for (int x = 0; x < FinalPlan[k].length; x++){
+
+                            if (FinalPlan[k][x][0].equals(courseCode2)){
+
+                                for (int row = 0; row < FinalPlan[k][x].length; row++){
+                                String temp = FinalPlan[i][j][row];
+                                FinalPlan[i][j][row] = FinalPlan[k][x][row];
+                                FinalPlan[k][x][row] = temp;
+                                }
+                                assumedKnowledge(courseCode1, courseCode2);
+
+                                return true;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void assumedKnowledgeWithCompletedCourses(String course2, String[] course3)
+    {
+        int Checker = 0, Checker2 =0, courseCount = 0 , aLength = 0, bLength = 0;
+        String Error = "Nothing";
+
+        for(int a=0;a < course3.length; a++ ) {
+
+            for (int x = 0; x < FinalPlan[a].length; x++){
+            courseCount += Integer.parseInt(FinalPlan[a][x][3]);}
+            if (course3[a] == null)
+            {
+                continue;
+            }
+            else if (course3[a].contains(course2))
+            {
+                for (int d = 0; d <= a; d++) {
+                    for (int e = 0; e < 4; e++) {
+                        if ((FinalPlan[d][e][6]).contains(course3[a]))
+                        {
+                            Checker = 1;
+                            //System.out.println("Error! Need to complete " + FinalPlan[a][b][0]);
+                        }
+                        else
+                        {
+                            Error = FinalPlan[d][e][6];
+                        }
+                    }
+                }
+            } else if (course3[a].contains("COMP3851A")) {
+                if (courseCount < 14) {
+                    System.out.println("Error! Need to complete " + (14 - courseCount) + " more courses to do this course");
+                }
+            } else if (course3[a].contains("COMP3851B")) {
+                for (int g = 0; g < a; g++) {
+                    for (int f = 0; f < 4; f++) {
+                        if (FinalPlan[g][f][0].contains("COMP3851A")) {
+                            Checker2 = 1;
+                        }
+                    }
+                }
+
+            }
+        }
+        if(Checker == 0 )
+        {
+            System.out.println("Error! Need to complete " + Error + "before Enrolling in");
+        }
+        if(Checker2 == 0)
+        {
+            System.out.println("Error! Need to complete COMP3851A before COMP3851B");
+        }
+    }
+
+
+
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
+
+
+
+
+    private static void assumedKnowledge(String course2, String course3 )
+    {
+        int Checker = 0, Checker2 =0, courseCount = 0 , aLength = 0, bLength = 0;
+        String Error = "Nothing";
+
+        for(int a=0;a < FinalPlan.length; a++ )
+        {
+            for(int b = 0; b < FinalPlan[a].length; b++)
+            {
+                courseCount++;
+                if (FinalPlan[a][b][6] == null)
+                {
+                    continue;
+                }
+                else if(FinalPlan[a][b][0].contains(course2))
+                {
+                    for(int d = 0; d <= a ; d++ )
+                    {
+                        for(int e = 0; e < 4 ; e++ )
+                        {
+                            if((FinalPlan[a][b][6]).contains(FinalPlan[d][e][0]))
+                            {
+                                Checker = 1;
+                                System.out.println("Error! Need to complete " + FinalPlan[a][b][0]);
+                            }
+                            else
+                            {
+                                Error = FinalPlan[a][b][6];
+                            }
+                        }
+                    }
+                }
+                else if(FinalPlan[a][b][0].contains("COMP3851A"))
+                {
+                    if(courseCount < 14)
+                    {
+                        System.out.println("Error! Need to complete " + (14 - courseCount) + " more courses to do this course" );
+                    }
+                }
+                else if(FinalPlan[a][b][0].contains("COMP3851B"))
+                {
+                    for(int g=0; g< a; g++)
+                    {
+                        for(int f=0; f < 4; f++)
+                        {
+                            if(FinalPlan[g][f][0].contains("COMP3851A"))
+                            {
+                                Checker2 = 1;
+                            }
+                        }
+                    }
+
+                }
+            }
+            if(FinalPlan[a] != null)
+            {
+                aLength++;
+            }
+        }
+        if(Checker == 0 )
+        {
+            System.out.println("Error! Need to complete " + Error);
+        }
+        if(Checker2 == 0)
+        {
+            System.out.println("Error! Need to complete COMP3851A before COMP3851B");
+        }
+    }
+
+
+
+
+
+
+
+    private static void prerequisite(String course2)
+    {
+        for(int a=0; a<FinalPlan.length; a++)
+        {
+            for(int b=0; b<FinalPlan[a].length; b++)
+            {
+                if (FinalPlan[a][b][5] == null)
+                {
+                    continue;
+                }
+                else if(FinalPlan[a][b][0].contains(course2))
+                {
+                    for(int d=0; d<=a; d++)
+                    {
+                        for(int e=0; e<4; e ++)
+                        {
+                            if(FinalPlan[a][b][5].contains(FinalPlan[d][e][0]))
+                            {
+                                System.out.print("Cannot enrol in " + course2 + " because " + FinalPlan[d][e][0] + " has been completed");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
 }
 
