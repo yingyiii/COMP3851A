@@ -1,5 +1,6 @@
 package com.ProgramAdvisoryTool.ProgramPlanner.Controller;
 
+import com.ProgramAdvisoryTool.ProgramPlanner.Model.GetDraggedCoursesInfo;
 import com.ProgramAdvisoryTool.ProgramPlanner.Model.ImportDegreeInfo;
 import com.ProgramAdvisoryTool.ProgramPlanner.Model.StudentInfoRequest;
 import com.ProgramAdvisoryTool.ProgramPlanner.PlanGenerator;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class PLController {
     ImportDegreeInfo importDegreeInfo = new ImportDegreeInfo();
     PlanGenerator PlanGenerator = new PlanGenerator();
+    GetDraggedCoursesInfo getDraggedCoursesInfo = new GetDraggedCoursesInfo();
     @Autowired
     private PLService PLService;
 
@@ -47,6 +49,7 @@ public class PLController {
 
     @PostMapping("/sendInfo")
     public String addStudentInfo(@RequestBody StudentInfoRequest studentInfoRequest) {
+
         String degree = studentInfoRequest.getDegree();
         String major = studentInfoRequest.getMajor();
         String completedCourses = studentInfoRequest.getCompletedCourses();
@@ -57,17 +60,23 @@ public class PLController {
 
         return "New input added";
     }
+    @PostMapping("/DraggedBoxes")
+    public String DraggedBoxes(@RequestBody GetDraggedCoursesInfo getDraggedCoursesInfo) {
+
+        String C1 = getDraggedCoursesInfo.getCourse1();
+        String C2 = getDraggedCoursesInfo.getCourse2();
+
+        PlanGenerator.swapValue(C1, C2);
+        return "Boxes Dragged";
+    }
 
     @GetMapping("/getInfo")
     public String[][][] getAllstudent() {
-
-
-
         return PlanGenerator.GetThePlan();
-
-
-
-
+    }
+    @GetMapping("/getDirected")
+    public String[][] GetAllDirected() {
+        return PlanGenerator.GetDirected();
     }
 
 

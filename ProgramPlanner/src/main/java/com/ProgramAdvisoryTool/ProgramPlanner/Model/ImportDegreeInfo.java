@@ -148,7 +148,7 @@ public class ImportDegreeInfo {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/uondb", "root", "0000");
 
             //create statement
-            String s1 = "SELECT Course_ID FROM it_courses UNION SELECT Course_ID FROM cs_courses";
+            String s1 = "SELECT Course_ID FROM it_courses UNION SELECT Course_ID FROM cs_courses ORDER BY Course_ID;";
             PreparedStatement preparedStatement1 = connection.prepareStatement(s1, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             //preparedStatement1.setString(1, "Core");
             resultSet3 = preparedStatement1.executeQuery();
